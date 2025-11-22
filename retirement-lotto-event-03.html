@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>BNK 퇴직연금 로또볼 이벤트 – 통합 버전</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* ---------------- Global ---------------- */
+body {
+    font-family: 'Pretendard','Noto Sans KR',sans-serif;
+    background: #F6F6F8;
+    color: #222;
+    margin: 0;
+    padding: 0;
+}
+
+/* ---------------- Hero Video Section ---------------- */
+.hero-video-wrap {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+}
+
+.hero-skeleton {
+    position: absolute;
+    inset: 0;
+    background: #e4e4e7;
+    animation: skeletonPulse 1.2s ease-in-out infinite;
+    z-index: 30;
+}
+@keyframes skeletonPulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.45; }
+    100% { opacity: 1; }
+}
+
+.hero-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    z-index: 1;
+}
+
+.hero-dim {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.48);
+    z-index: 2;
+}
+
+.hero-logo {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 150px;
+    opacity: 0.85;
+    z-index: 5;
+}
+
+.hero-content {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    text-align: center;
+}
+
+.fade-in {
+    opacity: 0;
+    animation: fadeInHero 1.2s ease forwards;
+}
+@keyframes fadeInHero {
+    0% { opacity: 0; transform: translateY(25px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.hero-content h1 {
+    font-size: 40px;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+.hero-content p {
+    font-size: 18px;
+    opacity: 0.95;
+    margin-bottom: 26px;
+}
+.hero-btn {
+    padding: 14px 30px;
+    background: #D91A1A;
+    color: #fff;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.22);
+}
+.hero-btn:hover {
+    background: #b61616;
+    transform: translateY(-2px);
+}
+
+/* ---------------- 3D Lotto Roll Section (from 03) ---------------- */
+.page-wrap {
+    width: 100%;
+    max-width: 1080px;
+    margin: 60px auto;
+    border-radius: 24px;
+    padding: 32px 28px 28px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
+    box-shadow:
+        0 24px 60px rgba(0,0,0,0.6),
+        inset 0 0 0 1px rgba(255,255,255,0.12);
+    backdrop-filter: blur(18px);
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.logo-text {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 20% 20%, #fff 0%, #ff3b3b 45%, #7b0000 100%);
+    box-shadow: 0 0 14px rgba(255,90,90,0.8);
+}
+
+.header-badge {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.9;
+}
+
+.hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 28px;
+    align-items: center;
+}
+
+.hero-copy-title {
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 12px;
+}
+
+.accent {
+    color: #ffd24d;
+    text-shadow: 0 0 12px rgba(255,210,77,0.85);
+}
+
+.btn-primary {
+    border: none;
+    border-radius: 999px;
+    padding: 12px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    background: linear-gradient(135deg, #ff5454, #ffa53b);
+    color: #1a0713;
+    box-shadow:
+        0 10px 22px rgba(0,0,0,0.6),
+        0 0 15px rgba(255,170,80,0.9);
+}
+
+/* --- Lotto Panel --- */
+.game-panel {
+    border-radius: 22px;
+    padding: 18px 18px 20px;
+    background: radial-gradient(circle at top, rgba(6,6,14,0.95), rgba(3,3,8,0.98));
+    box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,0.08),
+        0 20px 40px rgba(0,0,0,0.85);
+    position: relative;
+}
+
+.slot-row { display: flex; justify-content: center; gap: 24px; margin: 22px 0 18px; }
+.slot { width: 120px; height: 120px; border-radius: 50%; position: relative; padding: 6px; }
+.slot-content { width: 100%; height: 100%; position: relative; }
+
+.lotto-ball-svg { width: 100%; height: 100%; display: block; }
+
+.ball-number {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 38px;
+    font-weight: 800;
+    color: #fefefe;
+    text-shadow:
+        0 0 6px rgba(0,0,0,0.7),
+        0 0 16px rgba(139,0,0,0.9);
+}
+
+/* Rolling animation */
+@keyframes roll-blur {
+    0%   { transform: translateY(0) scale(1); filter: blur(0px); }
+    50%  { transform: translateY(2px) scale(1.02); filter: blur(2px); }
+    100% { transform: translateY(0) scale(1); filter: blur(0px); }
+}
+
+.slot.rolling .lotto-ball-svg {
+    animation: roll-blur 0.35s linear infinite;
+}
+
+.msg { text-align: right; min-height: 18px; font-size: 12px; color: rgba(255,255,255,0.85); }
+
+/* Modal */
+.modal-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; z-index: 100;
+}
+.modal {
+    position: fixed; inset: 0; display: none; justify-content: center; align-items: center; z-index: 101;
+}
+.modal-card {
+    width: 100%; max-width: 420px; border-radius: 22px;
+    padding: 22px; background: #24142b; box-shadow: 0 22px 60px rgba(0,0,0,0.9);
+}
+
+.winning-chip {
+    min-width: 32px; height: 32px; border-radius: 999px;
+    background: radial-gradient(circle at top, #fffef6, #ffd24d);
+    color: #4a2600; display: flex; justify-content: center; align-items: center;
+    font-weight: 700; font-size: 14px;
+    margin: 0 4px;
+}
+</style>
+
+</head>
+<body>
+
+<!-- ---------------- Hero Section ---------------- -->
+<section class="hero-video-wrap">
+    <div class="hero-skeleton" id="heroSkeleton"></div>
+
+    <video class="hero-video" id="heroVideo" autoplay muted loop playsinline>
+        <source src="bg.mp4" type="video/mp4">
+    </video>
+
+    <div class="hero-dim"></div>
+
+    <img src="bnk-retire-logo.png" class="hero-logo">
+
+    <div class="hero-content fade-in">
+        <h1>퇴직연금 로또볼 이벤트</h1>
+        <p>조회·진단·설정·신청만 해도 로또볼이 쌓입니다.</p>
+        <a href="#rollGame" class="hero-btn">이벤트 참여하기</a>
+    </div>
+</section>
+
+
+<!-- ---------------- Integrated Lotto Roll Section ---------------- -->
+<div id="rollGame" class="page-wrap">
+
+    <header class="header">
+        <div class="logo-text">
+            <div class="logo-dot"></div>
+            BNK RETIREMENT LOTTO
+        </div>
+        <div class="header-badge">LOYALTY WEB EVENT</div>
+    </header>
+
+    <section class="hero">
+        <div>
+            <h1 class="hero-copy-title">
+                로또볼을 굴려<br>
+                <span class="accent">푸짐한 경품</span>을 받아가세요.
+            </h1>
+
+            <ul class="hero-bullets">
+                <li>참여할 때마다 경품 추첨 기회 자동 적립</li>
+                <li>퇴직연금 조회·진단 시 로또볼 추가 지급</li>
+                <li>BNK 부산은행 퇴직연금 고객 전용 웹 이벤트</li>
+            </ul>
+
+            <button id="rollButton" class="btn-primary">로또 굴리기 시작</button>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="game-panel">
+            <div class="slot-row">
+                <div class="slot" data-index="0">
+                    <div class="slot-content">
+                        <svg class="lotto-ball-svg" viewBox="0 0 120 120">
+                            <defs>
+                                <radialGradient id="g1" cx="30%" cy="22%" r="70%">
+                                    <stop offset="0%" stop-color="#ffffff"/>
+                                    <stop offset="26%" stop-color="#ffe5e5"/>
+                                    <stop offset="55%" stop-color="#ff3b3b"/>
+                                    <stop offset="100%" stop-color="#7c0000"/>
+                                </radialGradient>
+                            </defs>
+                            <circle cx="60" cy="60" r="54" fill="url(#g1)"/>
+                            <circle cx="40" cy="32" r="19" fill="rgba(255,255,255,0.55)"/>
+                            <circle cx="35" cy="28" r="11" fill="rgba(255,255,255,0.9)"/>
+                        </svg>
+                        <div class="ball-number" data-slot-number>0</div>
+                    </div>
+                </div>
+
+                <div class="slot" data-index="1">
+                    <div class="slot-content">
+                        <svg class="lotto-ball-svg" viewBox="0 0 120 120">
+                            <defs>
+                                <radialGradient id="g2" cx="30%" cy="22%" r="70%">
+                                    <stop offset="0%" stop-color="#ffffff"/>
+                                    <stop offset="26%" stop-color="#ffe5e5"/>
+                                    <stop offset="55%" stop-color="#ff3b3b"/>
+                                    <stop offset="100%" stop-color="#7c0000"/>
+                                </radialGradient>
+                            </defs>
+                            <circle cx="60" cy="60" r="54" fill="url(#g2)"/>
+                            <circle cx="40" cy="32" r="19" fill="rgba(255,255,255,0.55)"/>
+                            <circle cx="35" cy="28" r="11" fill="rgba(255,255,255,0.9)"/>
+                        </svg>
+                        <div class="ball-number" data-slot-number>0</div>
+                    </div>
+                </div>
+
+                <div class="slot" data-index="2">
+                    <div class="slot-content">
+                        <svg class="lotto-ball-svg" viewBox="0 0 120 120">
+                            <defs>
+                                <radialGradient id="g3" cx="30%" cy="22%" r="70%">
+                                    <stop offset="0%" stop-color="#ffffff"/>
+                                    <stop offset="26%" stop-color="#ffe5e5"/>
+                                    <stop offset="55%" stop-color="#ff3b3b"/>
+                                    <stop offset="100%" stop-color="#7c0000"/>
+                                </radialGradient>
+                            </defs>
+                            <circle cx="60" cy="60" r="54" fill="url(#g3)"/>
+                            <circle cx="40" cy="32" r="19" fill="rgba(255,255,255,0.55)"/>
+                            <circle cx="35" cy="28" r="11" fill="rgba(255,255,255,0.9)"/>
+                        </svg>
+                        <div class="ball-number" data-slot-number>0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="msg" id="message"></div>
+        </div>
+    </section>
+</div>
+
+
+<!-- Modal -->
+<div class="modal-backdrop" id="modalBackdrop"></div>
+<div class="modal" id="winModal">
+    <div class="modal-card">
+        <h3 style="color:#ffd24d; text-align:center;">오늘의 행운 고객님!</h3>
+        <p style="text-align:center;">아래 번호로 실물 경품이 지급됩니다.</p>
+        <div id="winningNumbersWrap" style="display:flex; justify-content:center; margin:14px 0;"></div>
+        <button onclick="hideWinModal()" style="width:100%; padding:10px; border-radius:8px; margin-top:20px;">닫기</button>
+    </div>
+</div>
+
+
+<script>
+/* Skeleton hide after video loaded */
+const heroVideo = document.getElementById("heroVideo");
+const heroSkeleton = document.getElementById("heroSkeleton");
+heroVideo.addEventListener("loadeddata", () => {
+    heroSkeleton.style.opacity = "0";
+    setTimeout(()=>heroSkeleton.style.display="none", 600);
+});
+
+
+/* ---------------- Lotto Roll Logic ---------------- */
+const rollButton = document.getElementById('rollButton');
+const messageEl = document.getElementById('message');
+const slotEls = Array.from(document.querySelectorAll('.slot'));
+const numberEls = Array.from(document.querySelectorAll('[data-slot-number]'));
+
+const modalBackdrop = document.getElementById('modalBackdrop');
+const winModal = document.getElementById('winModal');
+const winningNumbersWrap = document.getElementById('winningNumbersWrap');
+
+let isRolling = false;
+let lastNumbers = [0,0,0];
+
+function randomNumber() {
+    return Math.floor(Math.random() * 45) + 1;
+}
+
+function showWinModal(nums) {
+    winningNumbersWrap.innerHTML = "";
+    nums.forEach(n => {
+        const chip = document.createElement("div");
+        chip.className = "winning-chip";
+        chip.textContent = n;
+        winningNumbersWrap.appendChild(chip);
+    });
+    modalBackdrop.style.display = "block";
+    winModal.style.display = "flex";
+}
+
+function hideWinModal() {
+    modalBackdrop.style.display = "none";
+    winModal.style.display = "none";
+}
+
+function isWin(nums) {
+    return nums[0] === nums[1] && nums[1] === nums[2];
+}
+
+function startRoll() {
+    if (isRolling) return;
+    isRolling = true;
+    messageEl.textContent = "행운의 번호를 굴리는 중…";
+
+    const intervals = [];
+
+    slotEls.forEach(slot => slot.classList.add("rolling"));
+    numberEls.forEach(n => n.textContent = "·");
+
+    slotEls.forEach((slot, idx) => {
+        const interval = setInterval(() => {
+            const n = randomNumber();
+            lastNumbers[idx] = n;
+            numberEls[idx].textContent = n;
+        }, 70 + idx * 20);
+        intervals.push(interval);
+    });
+
+    [900, 1200, 1500].forEach((delay, idx) => {
+        setTimeout(() => {
+            clearInterval(intervals[idx]);
+            slotEls[idx].classList.remove("rolling");
+
+            if (idx === 2) {
+                isRolling = false;
+
+                if (isWin(lastNumbers)) {
+                    messageEl.textContent = "축하합니다! 당첨!";
+                    showWinModal(lastNumbers);
+                } else {
+                    messageEl.textContent = "아쉽지만 다음 기회에!";
+                }
+            }
+        }, delay);
+    });
+}
+
+rollButton.onclick = startRoll;
+modalBackdrop.onclick = hideWinModal;
+</script>
+
+</body>
+</html>

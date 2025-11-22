@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>BNK 퇴직연금 로또볼 이벤트 – 미니멀 통합 버전</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* ---------------- Global Background Video ---------------- */
+body {
+    margin: 0;
+    font-family: 'Pretendard','Noto Sans KR', sans-serif;
+    color: #111;
+    background: #f7f7f9;
+}
+
+.global-bg-video {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+}
+
+.global-bg-dim {
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.45); /* 밝은 톤 */
+    z-index: -1;
+    backdrop-filter: blur(3px);
+}
+
+/* ---------------- Layout ---------------- */
+main {
+    width: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding-bottom: 120px;
+}
+
+/* ---------------- Hero Section ---------------- */
+.hero {
+    text-align: center;
+    padding: 160px 20px 120px;
+}
+
+.hero h1 {
+    font-size: 40px;
+    font-weight: 800;
+    margin-bottom: 14px;
+}
+
+.hero p {
+    font-size: 18px;
+    color: #333;
+    opacity: 0.9;
+    margin-bottom: 34px;
+}
+
+.btn-primary {
+    background: #D7191F; /* BNK Red */
+    color: #fff;
+    padding: 14px 28px;
+    border-radius: 12px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    cursor: pointer;
+}
+
+/* ---------------- Section Card (Light Minimal) ---------------- */
+.section-card {
+    background: #ffffffcc;
+    backdrop-filter: blur(6px);
+    border-radius: 20px;
+    padding: 36px 34px;
+    margin: 40px 20px;
+    border: 1px solid #E6E6E6;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+
+/* ---------------- Lotto Section ---------------- */
+.section-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 22px;
+}
+
+/* Lotto Balls Layout */
+.lotto-row {
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    margin: 30px 0 20px;
+}
+
+.lotto-ball {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid #90939B; /* BNK Silver */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    font-weight: 700;
+    color: #8B0304; /* BNK Dark Red */
+    box-shadow:
+        0 1px 3px rgba(0,0,0,0.06),
+        inset 0 1px 2px rgba(255,255,255,0.8);
+}
+
+/* Roll Animation (Minimal) */
+@keyframes rollUp {
+    0% { transform: translateY(10px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.lotto-ball.roll {
+    animation: rollUp 0.1s ease-out;
+}
+
+/* Message */
+.msg {
+    margin-top: 14px;
+    text-align: center;
+    font-size: 15px;
+    color: #444;
+    min-height: 20px;
+}
+
+/* Modal */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    display: none;
+    z-index: 100;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 101;
+}
+
+.modal-card {
+    background: #ffffff;
+    padding: 28px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 380px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.modal-card h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #8B0304;
+    font-weight: 700;
+}
+
+.winning-chip {
+    min-width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #FFE7E7;
+    border: 1px solid #D7191F;
+    color: #8B0304;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    font-size: 16px;
+    margin: 0 6px;
+}
+
+.close-btn {
+    margin-top: 20px;
+    padding: 10px 18px;
+    background: #D7191F;
+    border-radius: 8px;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Full Background Video -->
+<video class="global-bg-video" autoplay muted loop playsinline>
+    <source src="bg.mp4" type="video/mp4">
+</video>
+<div class="global-bg-dim"></div>
+
+<main>
+
+<!-- Hero Section -->
+<section class="hero">
+    <h1>퇴직연금 로또볼 이벤트</h1>
+    <p>조회·진단·설정·신청만 해도 로또볼이 쌓입니다.</p>
+    <a href="#lottoSection"><button class="btn-primary">이벤트 참여하기</button></a>
+</section>
+
+<!-- Lotto Game Section -->
+<section id="lottoSection" class="section-card">
+
+    <div class="section-title">오늘의 행운 번호</div>
+
+    <div class="lotto-row">
+        <div class="lotto-ball" data-slot="0">0</div>
+        <div class="lotto-ball" data-slot="1">0</div>
+        <div class="lotto-ball" data-slot="2">0</div>
+    </div>
+
+    <div style="text-align:center;">
+        <button id="rollButton" class="btn-primary">로또 굴리기</button>
+    </div>
+
+    <div id="msg" class="msg"></div>
+</section>
+
+</main>
+
+<!-- Modal -->
+<div id="modalBackdrop" class="modal-backdrop"></div>
+<div id="winModal" class="modal">
+    <div class="modal-card">
+        <h3>당첨을 축하합니다!</h3>
+        <div id="winNums"></div>
+        <button class="close-btn" onclick="hideWinModal()">닫기</button>
+    </div>
+</div>
+
+<script>
+/* Core Lotto Logic */
+const balls = document.querySelectorAll('.lotto-ball');
+const rollButton = document.getElementById('rollButton');
+const msg = document.getElementById('msg');
+const modalBackdrop = document.getElementById('modalBackdrop');
+const winModal = document.getElementById('winModal');
+const winNums = document.getElementById('winNums');
+
+let isRolling = false;
+
+function randomNum() {
+    return Math.floor(Math.random() * 45) + 1;
+}
+
+function isWin(nums) {
+    return nums[0] === nums[1] && nums[1] === nums[2];
+}
+
+function hideWinModal() {
+    modalBackdrop.style.display = 'none';
+    winModal.style.display = 'none';
+}
+
+function showWinModal(nums) {
+    winNums.innerHTML = "";
+    nums.forEach(n => {
+        const chip = document.createElement("span");
+        chip.className = "winning-chip";
+        chip.textContent = n;
+        winNums.appendChild(chip);
+    });
+
+    modalBackdrop.style.display = "block";
+    winModal.style.display = "flex";
+}
+
+rollButton.onclick = () => {
+    if (isRolling) return;
+
+    isRolling = true;
+    msg.textContent = "굴리는 중…";
+
+    const intervals = [];
+    const results = [0,0,0];
+
+    balls.forEach((ball, idx) => {
+        ball.classList.add("roll");
+        const interval = setInterval(() => {
+            const n = randomNum();
+            results[idx] = n;
+            ball.textContent = n;
+        }, 70 + idx * 20);
+        intervals.push(interval);
+    });
+
+    [900, 1200, 1500].forEach((delay, idx) => {
+        setTimeout(() => {
+            clearInterval(intervals[idx]);
+            balls[idx].classList.remove("roll");
+
+            if (idx === 2) {
+                isRolling = false;
+
+                if (isWin(results)) {
+                    msg.textContent = "축하합니다! 당첨입니다.";
+                    showWinModal(results);
+                } else {
+                    msg.textContent = "아쉽지만 다음 기회에!";
+                }
+            }
+        }, delay);
+    });
+};
+</script>
+
+</body>
+</html>
