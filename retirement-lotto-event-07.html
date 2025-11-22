@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@1.0/nanumsquare.css">
+
+
+    <title>BNK 퇴직연금 로또 이벤트</title>
+
+    <style>
+        /* -------------------- 기본 세팅 -------------------- */
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            color: #F9FAFB;
+            font-size: 22px;
+            font-family: 'Nanum Gothic', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* full-screen video background */
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            filter: brightness(0.68);
+        }
+
+        /* 공통 섹션 레이아웃 */
+        .section {
+            padding: 120px 24px;
+        }
+
+        .section-inner {
+            max-width: 1080px;
+            margin: 0 auto;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* -------------------- 타이포그래피 -------------------- */
+        .hero-title {
+            font-size: clamp(48px, 5vw, 64px);
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            color: #FFFFFF;
+            text-shadow: 0 10px 32px rgba(0, 0, 0, 0.65);
+        }
+
+        .hero-sub {
+            font-size: 26px;
+            line-height: 1.6;
+            color: #E5E7EB;
+            margin-top: 20px;
+        }
+
+        .section-title {
+            font-size: 34px;
+            font-weight: 800;
+            margin-bottom: 22px;
+            color: #FFF;
+            text-shadow: 0 6px 18px rgba(0, 0, 0, 0.65);
+        }
+
+        .section-desc {
+            font-size: 30px;
+            color: #E5E7EB;
+            line-height: 1.7;
+        }
+
+        /* -------------------- 버튼 -------------------- */
+        .btn-primary {
+            background: linear-gradient(135deg, #8A6E4C, #CFA372);
+            color: #FFF;
+            padding: 30px 30px;
+            border: none;
+            border-radius: 999px;
+            font-size: 50px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.30);
+            transition: 0.18s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            opacity: 0.92;
+            border-radius: 999px;
+            font-size: 50px;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #FFF;
+            padding: 30px 30px;
+            border-radius: 999px;
+            font-size: 50px;
+            cursor: pointer;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            justify-content: center;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        /* -------------------- 번호 선택 칩 -------------------- */
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 14px;
+            margin-top: 26px;
+        }
+
+        .number-btn {
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 14px 0;
+            font-size: 26px;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            color: #FFF;
+            backdrop-filter: blur(12px);
+        }
+
+        .number-btn.selected {
+            background: linear-gradient(135deg, #FF4D4D, #FF9A62);
+            border-color: rgba(255, 255, 255, 0.7);
+            color: #FFF;
+        }
+
+        /* -------------------- 로또볼 -------------------- */
+        .lotto-ball {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 20%, #FFF, #FFECEC);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            color: #C41010;
+            padding: 10px;
+            font-size: 70px;
+            line-height: 1;
+            font-weight: 900;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.55),
+                inset 0 6px 12px rgba(255, 255, 255, 0.85);
+        }
+
+
+        /* -------------------- 로또 카드/추첨 -------------------- */
+        .lotto-card {
+            margin-top: 40px;
+            padding: 100px 100px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(14px);
+        }
+
+        .lotto-balls-row {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            /* ← 이거 추가 */
+        }
+
+        /* -------------------- 모달 -------------------- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-card {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 40px 32px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            max-width: 420px;
+            text-align: center;
+            color: #FFF;
+            backdrop-filter: blur(14px);
+        }
+
+        .modal-card h3 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .modal-desc {
+            font-size: 22px;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+        /* -------------------- Sticky CTA -------------------- */
+        .sticky-cta {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #FF4D4D, #FF9A62);
+            color: #FFF;
+            border: none;
+            border-radius: 999px;
+            font-size: 22px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 10px 32px rgba(0, 0, 0, 0.20);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =================== 영상 =================== -->
+    <video class="video-bg" autoplay muted loop playsinline>
+        <source src="bg.mp4" type="video/mp4">
+    </video>
+
+    <!-- =================== HERO =================== -->
+    <section class="section">
+        <div class="section-inner">
+            <h1 class="hero-title">BNK 퇴직연금 로또볼 이벤트</h1>
+            <p class="hero-sub">
+                연금 행동을 완료할 때마다 로또볼을 획득합니다. <br>
+                획득한 로또볼로 6개 번호를 맞추면 경품 추첨에 자동 응모됩니다.
+            </p>
+            <button class="btn-primary" style="margin-top:40px;" onclick="scrollToGame()">
+                지금 참여하기
+            </button>
+        </div>
+    </section>
+
+    <!-- =================== 번호 선택 =================== -->
+    <section class="section" id="game">
+        <div class="section-inner">
+
+            <h2 class="section-title">1) 번호 선택</h2>
+            <p class="section-desc">원하는 번호 6개를 선택하세요.</p>
+
+            <div class="number-grid" id="numberGrid"></div>
+
+            <button class="btn-secondary" style="margin-top:20px;" onclick="startDraw()">
+                선택 완료 & 추첨하기
+            </button>
+
+        </div>
+    </section>
+
+    <!-- =================== 추첨 화면 =================== -->
+    <section class="section" id="endSection">
+        <div class="section-inner">
+
+            <h2 class="section-title">2) 추첨 결과</h2>
+
+            <div class="lotto-card">
+                <p class="section-desc" id="summaryText">아직 추첨 전입니다.</p>
+
+                <div class="lotto-balls-row" id="resultRow"></div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- =================== 당첨 모달 =================== -->
+    <div class="modal" id="winModal">
+        <div class="modal-card">
+            <h3>축하합니다!</h3>
+            <p class="modal-desc">
+                당첨 번호와 일치합니다.<br>
+                경품 응모가 완료되었습니다.
+            </p>
+            <button class="btn-primary" onclick="closeModal()">확인</button>
+        </div>
+    </div>
+
+    <!-- =================== Sticky CTA =================== -->
+    <button class="sticky-cta" onclick="scrollToGame()">번호 선택하기</button>
+
+    <!-- =================== JS =================== -->
+    <script>
+
+        const numberGrid = document.getElementById("numberGrid");
+        const resultRow = document.getElementById("resultRow");
+        const summary = document.getElementById("summaryText");
+        let selected = [];
+
+        /* 번호 버튼 생성 */
+        for (let i = 1; i <= 45; i++) {
+            const btn = document.createElement("div");
+            btn.className = "number-btn";
+            btn.textContent = i;
+
+            btn.onclick = () => {
+                if (selected.includes(i)) {
+                    selected = selected.filter(n => n !== i);
+                    btn.classList.remove("selected");
+                } else {
+                    if (selected.length >= 6) return;
+                    selected.push(i);
+                    btn.classList.add("selected");
+                }
+            };
+
+            numberGrid.appendChild(btn);
+        }
+
+        /* 추첨 */
+        function startDraw() {
+            if (selected.length !== 6) {
+                alert("번호 6개를 선택하세요.");
+                return;
+            }
+
+            selected.sort((a, b) => a - b);
+
+            const win = [];
+            while (win.length < 6) {
+                const r = Math.floor(Math.random() * 45) + 1;
+                if (!win.includes(r)) win.push(r);
+            }
+            win.sort((a, b) => a - b);
+
+            summary.textContent =
+                "내 번호: " + selected.join(", ") +
+                " / 당첨 번호: " + win.join(", ");
+
+            resultRow.innerHTML = "";
+            win.forEach(n => {
+                const b = document.createElement("div");
+                b.className = "lotto-ball";
+                b.textContent = n;
+                resultRow.appendChild(b);
+            });
+
+            const match = win.filter(n => selected.includes(n)).length;
+            if (match >= 3) {
+                document.getElementById("winModal").style.display = "flex";
+            }
+
+            /* 👉 추가된 기능: 화면 맨 끝으로 이동 */
+            scrollToEnd();
+        }
+
+        function closeModal() {
+            document.getElementById("winModal").style.display = "none";
+        }
+
+        function scrollToGame() {
+            document.getElementById("game").scrollIntoView({ behavior: "smooth" });
+        }
+
+        /* 👉 맨 끝 페이지로 스크롤 */
+        function scrollToEnd() {
+            document.getElementById("endSection").scrollIntoView({ behavior: "smooth" });
+        }
+
+    </script>
+
+</body>
+
+</html>
