@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>BNK 퇴직연금 로또볼 이벤트 – 슬롯머신 추첨</title>
+
+<style>
+/* ---------------- Global ---------------- */
+body {
+    font-family: 'Pretendard','Noto Sans KR',sans-serif;
+    background: #F6F6F8;
+    color: #222;
+    margin: 0;
+    padding: 0;
+}
+
+/* ---------------- Video Hero ---------------- */
+.hero-video-wrap {
+    position: relative;
+    width: 100%;
+    height: 420px;
+    overflow: hidden;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+}
+
+/* Skeleton */
+.hero-skeleton {
+    position: absolute;
+    inset: 0;
+    background: #e4e4e7;
+    animation: skeletonPulse 1.2s ease-in-out infinite;
+    z-index: 30;
+}
+@keyframes skeletonPulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.45; }
+    100% { opacity: 1; }
+}
+
+/* Video */
+.hero-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    z-index: 1;
+}
+
+/* Dim */
+.hero-dim {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.48);
+    z-index: 2;
+}
+
+/* Watermark Logo */
+.hero-logo {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 150px;
+    opacity: 0.85;
+    z-index: 5;
+}
+
+/* Text Content */
+.hero-content {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    text-align: center;
+}
+
+/* Fade-in animation */
+.fade-in {
+    opacity: 0;
+    animation: fadeInHero 1.2s ease forwards;
+}
+@keyframes fadeInHero {
+    0% { opacity: 0; transform: translateY(25px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.hero-content h1 {
+    font-size: 40px;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+.hero-content p {
+    font-size: 18px;
+    opacity: 0.95;
+    margin-bottom: 26px;
+}
+.hero-btn {
+    padding: 14px 30px;
+    background: #D91A1A;
+    color: #fff;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.22);
+}
+.hero-btn:hover {
+    background: #b61616;
+    transform: translateY(-2px);
+}
+
+/* ---------------- Responsive ---------------- */
+@media (max-width: 768px) {
+    .hero-video-wrap { height: 320px; }
+    .hero-content h1 { font-size: 28px; }
+    .hero-content p { font-size: 15px; }
+    .hero-logo { width: 110px; }
+}
+@media (max-width: 480px) {
+    .hero-video-wrap { height: 280px; }
+    .hero-content h1 { font-size: 22px; }
+    .hero-content p { font-size: 14px; }
+    .hero-logo { width: 90px; }
+}
+
+/* ---------------- Main Container ---------------- */
+.container {
+    width: 900px;
+    background: #fff;
+    margin: 40px auto 80px;
+    padding: 32px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+.section-title {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* ---------------- Number Picker ---------------- */
+.number-grid {
+    display: grid;
+    grid-template-columns: repeat(9,1fr);
+    gap: 6px;
+}
+.number-btn {
+    padding: 7px 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 999px;
+    cursor: pointer;
+    color: #333;
+    text-align: center;
+    transition: 0.15s;
+}
+.number-btn.selected {
+    background: #D91A1A;
+    color: #fff;
+    border-color: #D91A1A;
+}
+
+/* Buttons */
+.controls {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+.btn {
+    padding: 9px 18px;
+    border-radius: 999px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+}
+.btn.primary {
+    background: #D91A1A;
+    color: #fff;
+    border-color: #D91A1A;
+}
+
+/* ---------------- Slot Machine ---------------- */
+.slot-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+.slot {
+    width: 100px;
+    height: 100px;
+    border: 4px solid #ddd;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    background: #fff;
+    box-shadow: inset 0 4px 10px rgba(0,0,0,0.08);
+}
+.rolling-number {
+    position: absolute;
+    font-size: 36px;
+    width: 100%;
+    text-align: center;
+    color: #D91A1A;
+    animation: roll 0.5s linear infinite;
+}
+@keyframes roll {
+    0% { top: -100%; }
+    100% { top: 100%; }
+}
+.final-number {
+    font-size: 36px;
+    font-weight: 700;
+    color: #D91A1A;
+    position: absolute;
+}
+
+/* ---------------- Compare UI ---------------- */
+.result-box {
+    margin-top: 40px;
+    padding: 20px;
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 10px;
+}
+.result-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.pill {
+    padding: 6px 12px;
+    border-radius: 999px;
+    display: inline-block;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+.pill.mine { background:#ffe6e6; color:#D91A1A; border:1px solid #D91A1A; }
+.pill.win { background:#eee; color:#333; border:1px solid #ccc; }
+.pill.match { background:#d4f6d4; color:#0a7a0a; border:1px solid #0a7a0a; }
+
+</style>
+</head>
+<body>
+
+<!-- ---------------- Hero Section ---------------- -->
+<section class="hero-video-wrap">
+    <div class="hero-skeleton" id="heroSkeleton"></div>
+
+    <video class="hero-video" id="heroVideo" autoplay muted loop playsinline>
+        <source src="bg.mp4" type="video/mp4">
+    </video>
+
+    <div class="hero-dim"></div>
+
+    <img src="bnk-retire-logo.png" class="hero-logo" alt="BNK 퇴직연금 연말캠페인 로고">
+
+    <div class="hero-content fade-in">
+        <h1>퇴직연금 로또볼 이벤트</h1>
+        <p>퇴직연금 관리만 해도 로또볼이 쌓입니다.<br>BNK 부산은행 고객을 위한 연말 특별 이벤트!</p>
+        <a href="#game" class="hero-btn">이벤트 참여하기</a>
+    </div>
+</section>
+
+<!-- ---------------- Game Section ---------------- -->
+<div class="container" id="game">
+
+    <h2>가상 로또 – 슬롯머신 추첨</h2>
+
+    <div class="section-title">1) 번호 선택 (6개)</div>
+    <div id="numberGrid" class="number-grid"></div>
+
+    <div class="controls">
+        <button class="btn" id="autoPickBtn">랜덤 6개</button>
+        <button class="btn" id="clearBtn">초기화</button>
+        <button class="btn primary" id="drawBtn">추첨하기</button>
+    </div>
+
+    <p>선택한 번호: <strong id="selectedNumbersText">없음</strong></p>
+
+    <div class="section-title">2) 추첨 결과</div>
+    <div class="slot-row" id="slotRow"></div>
+
+    <div class="result-box">
+        <div class="result-title">내가 선택한 번호</div>
+        <div id="myNums"></div>
+
+        <div class="result-title" style="margin-top:20px;">추첨 번호</div>
+        <div id="winNums"></div>
+
+        <div class="result-title" style="margin-top:20px;">일치한 번호</div>
+        <div id="matchNums"></div>
+    </div>
+
+</div>
+
+<script>
+/* ---------------- Skeleton hide after video load ---------------- */
+const heroVideo = document.getElementById("heroVideo");
+const heroSkeleton = document.getElementById("heroSkeleton");
+
+heroVideo.addEventListener("loadeddata", () => {
+    heroSkeleton.style.transition = "opacity 0.6s";
+    heroSkeleton.style.opacity = "0";
+    setTimeout(()=>heroSkeleton.style.display="none", 600);
+});
+
+/* ---------------- Number Picker ---------------- */
+const MAX = 45, PICK = 6;
+let selected = [];
+
+const numberGrid = document.getElementById("numberGrid");
+const selectedNumbersText = document.getElementById("selectedNumbersText");
+
+for (let i=1; i<=MAX; i++){
+    const btn=document.createElement("div");
+    btn.className="number-btn";
+    btn.textContent=i;
+    btn.onclick=()=>toggle(i,btn);
+    numberGrid.appendChild(btn);
+}
+
+function toggle(n,btn){
+    const idx=selected.indexOf(n);
+    if(idx===-1){
+        if(selected.length>=PICK) return alert("6개까지만 선택 가능합니다.");
+        selected.push(n);
+        btn.classList.add("selected");
+    }else{
+        selected.splice(idx,1);
+        btn.classList.remove("selected");
+    }
+    renderSelected();
+}
+
+function renderSelected(){
+    selectedNumbersText.textContent = selected.length
+        ? selected.sort((a,b)=>a-b).join(", ")
+        : "없음";
+}
+
+function randomPick(){
+    clearSel();
+    const s=new Set();
+    while(s.size<PICK) s.add(Math.floor(Math.random()*MAX)+1);
+    selected=[...s];
+    [...numberGrid.children].forEach(btn=>{
+        const v=Number(btn.textContent);
+        if(selected.includes(v)) btn.classList.add("selected");
+    });
+    renderSelected();
+}
+
+function clearSel(){
+    selected=[];
+    [...numberGrid.children].forEach(btn=>btn.classList.remove("selected"));
+    renderSelected();
+}
+
+/* ---------------- Slot Machine ---------------- */
+const slotRow=document.getElementById("slotRow");
+for(let i=0;i<6;i++){
+    const slot=document.createElement("div");
+    slot.className="slot";
+    slot.id="slot-"+i;
+    slotRow.appendChild(slot);
+}
+
+function rand6(){
+    const s=new Set();
+    while(s.size<6) s.add(Math.floor(Math.random()*MAX)+1);
+    return [...s].sort((a,b)=>a-b);
+}
+
+function startRoll(slot){
+    slot.innerHTML="";
+    const roll=document.createElement("div");
+    roll.className="rolling-number";
+    roll.textContent=Math.floor(Math.random()*MAX)+1;
+    slot.appendChild(roll);
+    const interval=setInterval(()=>{
+        roll.textContent=Math.floor(Math.random()*MAX)+1;
+    },60);
+    return interval;
+}
+
+function stopRoll(slot, interval, num){
+    clearInterval(interval);
+    slot.innerHTML="";
+    const final=document.createElement("div");
+    final.className="final-number";
+    final.textContent=num;
+    slot.appendChild(final);
+}
+
+/* ---------------- Compare UI ---------------- */
+function renderCompare(my, win){
+    const match=my.filter(n=>win.includes(n));
+
+    const myBox=document.getElementById("myNums");
+    const winBox=document.getElementById("winNums");
+    const matchBox=document.getElementById("matchNums");
+
+    myBox.innerHTML="";
+    winBox.innerHTML="";
+    matchBox.innerHTML="";
+
+    my.forEach(n=>{
+        const el=document.createElement("span");
+        el.className="pill mine";
+        el.textContent=n;
+        myBox.appendChild(el);
+    });
+
+    win.forEach(n=>{
+        const el=document.createElement("span");
+        el.className="pill win";
+        el.textContent=n;
+        winBox.appendChild(el);
+    });
+
+    if(match.length===0){
+        matchBox.textContent="없음";
+    }else{
+        match.forEach(n=>{
+            const el=document.createElement("span");
+            el.className="pill match";
+            el.textContent=n;
+            matchBox.appendChild(el);
+        });
+    }
+}
+
+/* ---------------- DRAW ---------------- */
+function draw(){
+    if(selected.length!==6)
+        return alert("번호 6개를 선택하세요.");
+
+    const win=rand6();
+    const my=[...selected].sort((a,b)=>a-b);
+
+    const intervals=[];
+    [...slotRow.children].forEach((slot,i)=>{
+        intervals[i]=startRoll(slot);
+    });
+
+    win.forEach((num,i)=>{
+        setTimeout(()=>{
+            stopRoll(slotRow.children[i], intervals[i], num);
+            if(i===5){
+                setTimeout(()=>renderCompare(my,win),400);
+            }
+        }, (i+1)*600);
+    });
+}
+
+document.getElementById("autoPickBtn").onclick=randomPick;
+document.getElementById("clearBtn").onclick=clearSel;
+document.getElementById("drawBtn").onclick=draw;
+
+</script>
+
+</body>
+</html>

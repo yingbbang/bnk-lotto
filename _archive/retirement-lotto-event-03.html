@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>BNK 퇴직연금 로또볼 이벤트 – 슬롯머신 추첨</title>
+
+<style>
+    /* ---------------- Global ---------------- */
+    body {
+        font-family: 'Pretendard','Noto Sans KR',sans-serif;
+        background: #F6F6F8;
+        color: #222;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* ---------------- Hero ---------------- */
+    .hero {
+        background: linear-gradient(135deg, #E62B2B, #7E2020);
+        padding: 70px 20px;
+        color: #fff;
+        text-align: center;
+        border-radius: 0 0 20px 20px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+    }
+
+    .hero h1 {
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 12px;
+    }
+
+    .hero p {
+        font-size: 17px;
+        line-height: 1.5;
+        opacity: 0.95;
+        margin-bottom: 26px;
+    }
+
+    .hero a {
+        text-decoration: none;
+        display: inline-block;
+        padding: 14px 28px;
+        background: #fff;
+        color: #D91A1A;
+        font-weight: 700;
+        border-radius: 999px;
+        transition: .2s;
+        border: 1px solid #fff;
+    }
+
+    .hero a:hover {
+        opacity: 0.85;
+        transform: translateY(-2px);
+    }
+
+    /* ---------------- Container ---------------- */
+    .container {
+        width: 900px;
+        background: #fff;
+        margin: 40px auto 80px;
+        padding: 32px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+        font-size: 24px;
+        color: #222;
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        margin-top: 20px;
+        font-size: 18px;
+        color: #333;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    /* ---------------- Number Picker ---------------- */
+    .number-grid {
+        display: grid;
+        grid-template-columns: repeat(9,1fr);
+        gap: 6px;
+    }
+
+    .number-btn {
+        padding: 7px 0;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 999px;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.15s;
+        color: #333;
+        font-size: 14px;
+    }
+
+    .number-btn:hover {
+        background: #f9f9f9;
+    }
+
+    .number-btn.selected {
+        background: #D91A1A;
+        border-color: #D91A1A;
+        color: #fff;
+        font-weight: 600;
+    }
+
+    /* Buttons */
+    .controls {
+        margin: 20px 0;
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 9px 18px;
+        border-radius: 999px;
+        border: 1px solid #ddd;
+        background: #fff;
+        cursor: pointer;
+        color: #333;
+        font-weight: 500;
+        transition: .2s;
+    }
+
+    .btn:hover {
+        background: #ffe6e6;
+        border-color: #D91A1A;
+        color: #D91A1A;
+    }
+
+    .btn.primary {
+        background: #D91A1A;
+        color: #fff;
+        border-color: #D91A1A;
+    }
+
+    .btn.primary:hover {
+        background: #b61616;
+    }
+
+    /* ---------------- Slot Machine ---------------- */
+    .slot-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+
+    .slot {
+        width: 100px;
+        height: 100px;
+        background: #fff;
+        border: 4px solid #ddd;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08) inset;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .rolling-number {
+        position: absolute;
+        width: 100%;
+        font-size: 36px;
+        font-weight: 700;
+        text-align: center;
+        color: #D91A1A;
+        animation: roll 0.5s linear infinite;
+    }
+
+    @keyframes roll {
+        0% { top: -100%; }
+        100% { top: 100%; }
+    }
+
+    .final-number {
+        font-size: 36px;
+        font-weight: 700;
+        color: #D91A1A;
+        position: absolute;
+    }
+
+</style>
+</head>
+<body>
+
+<!-- ---------------- Hero ---------------- -->
+<section class="hero">
+    <h1>퇴직연금 로또볼 이벤트</h1>
+    <p>퇴직연금 관리만 해도 로또볼이 쌓입니다.<br>BNK 부산은행 고객을 위한 연말 특별 이벤트!</p>
+    <a href="#game">이벤트 참여하기</a>
+</section>
+
+<!-- ---------------- Game ---------------- -->
+<div class="container" id="game">
+
+    <h2>가상 로또 – 슬롯머신 추첨</h2>
+
+    <div class="section-title">1) 번호 선택 (6개)</div>
+    <div id="numberGrid" class="number-grid"></div>
+
+    <div class="controls">
+        <button class="btn" id="autoPickBtn">랜덤 6개</button>
+        <button class="btn" id="clearBtn">초기화</button>
+        <button class="btn primary" id="drawBtn">추첨하기</button>
+    </div>
+
+    <p>선택한 번호: <strong id="selectedNumbersText">없음</strong></p>
+
+    <div class="section-title">2) 추첨 결과</div>
+
+    <div class="slot-row" id="slotRow">
+        <!-- JS가 슬롯 6개 생성 -->
+    </div>
+
+</div>
+
+<script>
+/* ---------------- 번호 선택 ---------------- */
+const MAX = 45, PICK = 6;
+let selected = [];
+
+const numberGrid = document.getElementById("numberGrid");
+const selectedNumbersText = document.getElementById("selectedNumbersText");
+
+for (let i = 1; i <= MAX; i++) {
+    const btn = document.createElement("div");
+    btn.className = "number-btn";
+    btn.textContent = i;
+
+    btn.onclick = () => {
+        const idx = selected.indexOf(i);
+        if (idx === -1) {
+            if (selected.length >= PICK) return alert("6개까지만 선택 가능합니다.");
+            selected.push(i);
+            btn.classList.add("selected");
+        } else {
+            selected.splice(idx, 1);
+            btn.classList.remove("selected");
+        }
+        renderSelected();
+    };
+
+    numberGrid.appendChild(btn);
+}
+
+function renderSelected() {
+    selectedNumbersText.textContent = selected.length
+        ? selected.sort((a,b)=>a-b).join(", ")
+        : "없음";
+}
+
+function randomPick() {
+    clearSel();
+    const s = new Set();
+    while (s.size < PICK) s.add(Math.floor(Math.random()*MAX)+1);
+    selected = [...s];
+
+    [...numberGrid.children].forEach(btn=>{
+        const v = Number(btn.textContent);
+        if(selected.includes(v)) btn.classList.add("selected");
+    });
+    renderSelected();
+}
+
+function clearSel() {
+    selected = [];
+    [...numberGrid.children].forEach(btn=>btn.classList.remove("selected"));
+    renderSelected();
+}
+
+/* ---------------- 슬롯머신 ---------------- */
+
+const slotRow = document.getElementById("slotRow");
+for (let i=0; i<6; i++) {
+    const slot = document.createElement("div");
+    slot.className = "slot";
+    slot.id = "slot-"+i;
+    slotRow.appendChild(slot);
+}
+
+function rand() {
+    const s = new Set();
+    while(s.size < 6) s.add(Math.floor(Math.random()*MAX)+1);
+    return [...s].sort((a,b)=>a-b);
+}
+
+function startRoll(slotEl) {
+    slotEl.innerHTML = "";
+    const roll = document.createElement("div");
+    roll.className = "rolling-number";
+    roll.textContent = Math.floor(Math.random()*MAX) + 1;
+    slotEl.appendChild(roll);
+
+    const interval = setInterval(()=>{
+        roll.textContent = Math.floor(Math.random()*MAX) + 1;
+    }, 60);
+
+    return interval;
+}
+
+function stopRoll(slotEl, interval, num) {
+    clearInterval(interval);
+    slotEl.innerHTML = "";
+    const final = document.createElement("div");
+    final.className = "final-number";
+    final.textContent = num;
+    slotEl.appendChild(final);
+}
+
+function draw() {
+    if(selected.length !== 6) 
+        return alert("번호 6개를 선택하세요.");
+
+    const results = rand();
+
+    const intervals = [];
+    [...slotRow.children].forEach((slot,i)=>{
+        intervals[i] = startRoll(slot);
+    });
+
+    results.forEach((num,i)=>{
+        setTimeout(()=>{
+            stopRoll(slotRow.children[i], intervals[i], num);
+        }, (i+1)*600);
+    });
+}
+
+document.getElementById("autoPickBtn").onclick = randomPick;
+document.getElementById("clearBtn").onclick = clearSel;
+document.getElementById("drawBtn").onclick = draw;
+
+</script>
+
+</body>
+</html>

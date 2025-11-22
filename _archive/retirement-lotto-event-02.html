@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>가상 로또 웹게임</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f5f7fb;
+            margin: 0;
+            padding: 40px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 900px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            padding: 24px 32px 32px;
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 16px 0 8px;
+        }
+
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .number-btn {
+            border: 1px solid #d0d4e4;
+            border-radius: 999px;
+            padding: 6px 0;
+            font-size: 13px;
+            text-align: center;
+            cursor: pointer;
+            background: #fff;
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+
+        .number-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .number-btn.selected {
+            background: #2563eb;
+            color: #fff;
+            border-color: #2563eb;
+        }
+
+        .number-btn.disabled {
+            opacity: 0.4;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .btn {
+            border-radius: 999px;
+            border: none;
+            padding: 8px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            background: #e5e7f5;
+            color: #111827;
+            font-weight: 500;
+            transition: all 0.15s ease;
+        }
+
+        .btn.primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn:hover {
+            filter: brightness(0.95);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+        }
+
+        .summary {
+            font-size: 13px;
+            color: #374151;
+            margin-bottom: 24px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 28px;
+            padding: 0 8px;
+            border-radius: 999px;
+            border: 1px solid #e5e7eb;
+            font-size: 13px;
+            margin-right: 4px;
+            margin-bottom: 4px;
+        }
+
+        .pill.mine {
+            background: #eef2ff;
+            border-color: #4f46e5;
+            color: #312e81;
+        }
+
+        .pill.win {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+
+        .pill.match {
+            background: #dcfce7;
+            border-color: #22c55e;
+            color: #166534;
+        }
+
+        .result-panel {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 16px;
+        }
+
+        .card {
+            border-radius: 14px;
+            border: 1px solid #e5e7f0;
+            padding: 16px 18px;
+            background: #fafbff;
+        }
+
+        .card h3 {
+            margin: 0 0 8px;
+            font-size: 15px;
+        }
+
+        .card p {
+            margin: 4px 0;
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+        .grade {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .grade-desc {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+
+        .log {
+            font-size: 12px;
+            color: #6b7280;
+            border-top: 1px dashed #e5e7eb;
+            padding-top: 8px;
+            margin-top: 8px;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .warning {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 12px;
+        }
+
+        .warning strong {
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>가상 로또 웹게임</h1>
+    <div class="subtitle">
+        실제 복권이 아니라, <strong>연습용·이벤트용 가상 로또 시뮬레이터</strong>입니다.
+    </div>
+
+    <!-- 번호 선택 영역 -->
+    <div class="section-title">1. 번호를 선택하세요 (1~45 중 6개)</div>
+    <div id="numberGrid" class="number-grid"></div>
+
+    <div class="controls">
+        <button id="autoPickBtn" class="btn">Auto Pick (랜덤 6개)</button>
+        <button id="clearBtn" class="btn">Clear</button>
+        <button id="drawBtn" class="btn primary">Draw (추첨)</button>
+    </div>
+
+    <div class="summary">
+        선택한 번호:
+        <span id="selectedNumbersText">없음</span>
+    </div>
+
+    <!-- 결과 영역 -->
+    <div class="section-title">2. 결과</div>
+    <div class="result-panel">
+        <div class="card">
+            <h3>당첨 번호</h3>
+            <div id="winningNumbersArea"></div>
+
+            <h3 style="margin-top:12px;">내 번호</h3>
+            <div id="myNumbersArea"></div>
+
+            <h3 style="margin-top:12px;">일치 번호</h3>
+            <div id="matchedNumbersArea"></div>
+        </div>
+
+        <div class="card">
+            <h3>등수</h3>
+            <div id="gradeText" class="grade">-</div>
+            <div id="gradeDesc" class="grade-desc">추첨 후 등수가 표시됩니다.</div>
+
+            <p id="matchCountText">일치 개수: -개</p>
+            <p id="tryCountText">총 시도 횟수: 0회</p>
+
+            <div class="log" id="logArea"></div>
+
+            <div class="warning">
+                ※ <strong>실제 동행복권 로또와는 아무 관련이 없습니다.</strong><br>
+                단순 난수 기반 시뮬레이션이며, 실제 당첨을 보장하지 않습니다.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const MAX_NUMBER = 45;
+    const PICK_COUNT = 6;
+
+    const numberGrid = document.getElementById('numberGrid');
+    const selectedNumbersText = document.getElementById('selectedNumbersText');
+    const winningNumbersArea = document.getElementById('winningNumbersArea');
+    const myNumbersArea = document.getElementById('myNumbersArea');
+    const matchedNumbersArea = document.getElementById('matchedNumbersArea');
+    const gradeText = document.getElementById('gradeText');
+    const gradeDesc = document.getElementById('gradeDesc');
+    const matchCountText = document.getElementById('matchCountText');
+    const tryCountText = document.getElementById('tryCountText');
+    const logArea = document.getElementById('logArea');
+
+    const autoPickBtn = document.getElementById('autoPickBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const drawBtn = document.getElementById('drawBtn');
+
+    let selectedNumbers = [];
+    let tryCount = 0;
+
+    function renderSelectedNumbersText() {
+        if (selectedNumbers.length === 0) {
+            selectedNumbersText.textContent = '없음';
+        } else {
+            selectedNumbersText.textContent = selectedNumbers.sort((a, b) => a - b).join(', ');
+        }
+    }
+
+    function createNumberButtons() {
+        for (let i = 1; i <= MAX_NUMBER; i++) {
+            const btn = document.createElement('div');
+            btn.className = 'number-btn';
+            btn.textContent = i.toString();
+
+            btn.addEventListener('click', () => {
+                const num = i;
+                const idx = selectedNumbers.indexOf(num);
+
+                if (idx === -1) {
+                    // 새로 선택
+                    if (selectedNumbers.length >= PICK_COUNT) {
+                        alert(`최대 ${PICK_COUNT}개까지만 선택할 수 있습니다.`);
+                        return;
+                    }
+                    selectedNumbers.push(num);
+                    btn.classList.add('selected');
+                } else {
+                    // 선택 해제
+                    selectedNumbers.splice(idx, 1);
+                    btn.classList.remove('selected');
+                }
+                renderSelectedNumbersText();
+            });
+
+            numberGrid.appendChild(btn);
+        }
+    }
+
+    function clearSelection() {
+        selectedNumbers = [];
+        const buttons = document.querySelectorAll('.number-btn');
+        buttons.forEach(btn => btn.classList.remove('selected'));
+        renderSelectedNumbersText();
+    }
+
+    function autoPick() {
+        clearSelection();
+        const nums = generateRandomNumbers(PICK_COUNT, MAX_NUMBER);
+        selectedNumbers = nums.slice().sort((a, b) => a - b);
+
+        const buttons = document.querySelectorAll('.number-btn');
+        buttons.forEach(btn => {
+            const value = parseInt(btn.textContent, 10);
+            if (selectedNumbers.includes(value)) {
+                btn.classList.add('selected');
+            } else {
+                btn.classList.remove('selected');
+            }
+        });
+
+        renderSelectedNumbersText();
+    }
+
+    function generateRandomNumbers(count, maxNumber) {
+        const set = new Set();
+        while (set.size < count) {
+            const n = Math.floor(Math.random() * maxNumber) + 1;
+            set.add(n);
+        }
+        return Array.from(set).sort((a, b) => a - b);
+    }
+
+    function draw() {
+        if (selectedNumbers.length !== PICK_COUNT) {
+            alert(`${PICK_COUNT}개를 모두 선택해야 추첨할 수 있습니다.`);
+            return;
+        }
+
+        const myNums = selectedNumbers.slice().sort((a, b) => a - b);
+        const winningNums = generateRandomNumbers(PICK_COUNT, MAX_NUMBER);
+
+        const matched = myNums.filter(n => winningNums.includes(n));
+
+        tryCount += 1;
+
+        renderPills(winningNumbersArea, winningNums, 'win');
+        renderPills(myNumbersArea, myNums, 'mine');
+        renderPills(matchedNumbersArea, matched, matched.length > 0 ? 'match' : '');
+
+        const gradeInfo = getGrade(matched.length);
+        gradeText.textContent = gradeInfo.gradeLabel;
+        gradeDesc.textContent = gradeInfo.desc;
+
+        matchCountText.textContent = `일치 개수: ${matched.length}개`;
+        tryCountText.textContent = `총 시도 횟수: ${tryCount}회`;
+
+        appendLog(myNums, winningNums, matched.length, gradeInfo.gradeLabel);
+    }
+
+    function renderPills(container, numbers, extraClass) {
+        container.innerHTML = '';
+        if (numbers.length === 0) {
+            container.textContent = '-';
+            return;
+        }
+        numbers.forEach(n => {
+            const span = document.createElement('span');
+            span.className = 'pill';
+            if (extraClass) span.classList.add(extraClass);
+            span.textContent = n.toString();
+            container.appendChild(span);
+        });
+    }
+
+    function getGrade(matchCount) {
+        // 단순 예시 규칙
+        switch (matchCount) {
+            case 6:
+                return { gradeLabel: '1등 (가상)', desc: '6개 모두 일치! 현실이었으면 인생 역전 각.' };
+            case 5:
+                return { gradeLabel: '2등 (가상)', desc: '5개 일치. 꽤 잘 맞췄습니다.' };
+            case 4:
+                return { gradeLabel: '3등 (가상)', desc: '4개 일치. 운이 좀 따라주네요.' };
+            case 3:
+                return { gradeLabel: '4등 (가상)', desc: '3개 일치. 소소한 성공.' };
+            case 2:
+                return { gradeLabel: '꽝에 가까움', desc: '2개 일치. 아직 멀었습니다.' };
+            case 1:
+                return { gradeLabel: '거의 꽝', desc: '1개 일치. 숫자 맛만 봤습니다.' };
+            default:
+                return { gradeLabel: '완전 꽝', desc: '하나도 안 맞음. 오히려 깔끔하다.' };
+        }
+    }
+
+    function appendLog(myNums, winNums, matchCount, gradeLabel) {
+        const timeStr = new Date().toLocaleTimeString();
+        const div = document.createElement('div');
+        div.textContent =
+            `[${timeStr}] 내 번호: ${myNums.join(', ')} | 당첨 번호: ${winNums.join(', ')} | ` +
+            `일치: ${matchCount}개 | 등급: ${gradeLabel}`;
+        logArea.prepend(div);
+    }
+
+    // 이벤트 바인딩
+    autoPickBtn.addEventListener('click', autoPick);
+    clearBtn.addEventListener('click', clearSelection);
+    drawBtn.addEventListener('click', draw);
+
+    // 초기 렌더링
+    createNumberButtons();
+    renderSelectedNumbersText();
+</script>
+</body>
+</html>
