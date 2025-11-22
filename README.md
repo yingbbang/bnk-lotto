@@ -15,12 +15,12 @@
 ---
 
 ## 📁 코드 저장소  
-
+**[라이브 페이지 보기-01](https://yingbbang.github.io/bnk-lotto/retirement-lotto-event-00.html)**    
 **[라이브 페이지 보기-01](https://yingbbang.github.io/bnk-lotto/retirement-lotto-event-01.html)**    
 **[라이브 페이지 보기-02](https://yingbbang.github.io/bnk-lotto/retirement-lotto-event-02.html)**    
 **[라이브 페이지 보기-03](https://yingbbang.github.io/bnk-lotto/retirement-lotto-event-04.html)**    
 **[라이브 페이지 보기-04](https://yingbbang.github.io/bnk-lotto/retirement-lotto-event-05.html)**  
-
+**[라이브 페이지 보기-04](https://yingbbang.github.io/bnk-lotto/retirement-lotto-event-06.html)**  
 ---
 
 ## 🎯 주요 기능
