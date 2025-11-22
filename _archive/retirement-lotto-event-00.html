@@ -6,6 +6,7 @@
 <title>BNK 퇴직연금 로또 이벤트</title>
 
 <style>
+
 /* -------------------- 기본 세팅 -------------------- */
 body {
     margin: 0;
@@ -90,6 +91,7 @@ body {
     background:rgba(255,255,255,0.08);
     border:1px solid rgba(255,255,255,0.45);
     color:#FFF;
+align:center;
     padding:30px 30px;
     border-radius:999px;
     font-size:50px;
@@ -210,7 +212,9 @@ body {
     cursor:pointer;
     box-shadow:0 10px 32px rgba(0,0,0,0.55);
 }
+
 </style>
+
 </head>
 
 <body>
@@ -225,8 +229,8 @@ body {
     <div class="section-inner">
         <h1 class="hero-title">BNK 퇴직연금 로또볼 이벤트</h1>
         <p class="hero-sub">
-            연금 행동을 완료할 때마다 로또볼을 획득합니다. <br>
-            획득한 로또볼로 6개 번호를 맞추면 경품 추첨에 자동 응모됩니다.
+            연금 행동에 참여할수록 로또볼을 획득하고, <br>
+            6개 번호를 맞추면 푸짐한 경품에 자동 응모됩니다.
         </p>
         <button class="btn-primary" style="margin-top:40px;" onclick="scrollToGame()">
             지금 참여하기
@@ -239,7 +243,9 @@ body {
     <div class="section-inner">
 
         <h2 class="section-title">1) 번호 선택</h2>
-        <p class="section-desc">원하는 번호 6개를 선택하세요.</p>
+        <p class="section-desc">
+            원하는 번호 6개를 선택하세요.
+        </p>
 
         <div class="number-grid" id="numberGrid"></div>
 
@@ -251,7 +257,7 @@ body {
 </section>
 
 <!-- =================== 추첨 화면 =================== -->
-<section class="section" id="endSection">
+<section class="section">
     <div class="section-inner">
 
         <h2 class="section-title">2) 추첨 결과</h2>
@@ -279,6 +285,7 @@ body {
 
 <!-- =================== Sticky CTA =================== -->
 <button class="sticky-cta" onclick="scrollToGame()">번호 선택하기</button>
+
 
 <!-- =================== JS =================== -->
 <script>
@@ -325,7 +332,7 @@ function startDraw() {
     win.sort((a,b)=>a-b);
 
     summary.textContent = 
-        "내 번호: " + selected.join(", ") +
+        "내 번호: " + selected.join(", ") + 
         " / 당첨 번호: " + win.join(", ");
 
     resultRow.innerHTML = "";
@@ -340,9 +347,6 @@ function startDraw() {
     if (match >= 3) {
         document.getElementById("winModal").style.display = "flex";
     }
-
-    /* 👉 추가된 기능: 화면 맨 끝으로 이동 */
-    scrollToEnd();
 }
 
 function closeModal() {
@@ -351,11 +355,6 @@ function closeModal() {
 
 function scrollToGame() {
     document.getElementById("game").scrollIntoView({behavior:"smooth"});
-}
-
-/* 👉 맨 끝 페이지로 스크롤 */
-function scrollToEnd() {
-    document.getElementById("endSection").scrollIntoView({behavior:"smooth"});
 }
 
 </script>
