@@ -15,7 +15,7 @@
 ---
 
 ## 📁 코드 저장소  
-**[라이브 페이지 보기-00](https://yingbbang.github.io/bnk-lotto/retirement-lotto-event-07.html)**    
+**[라이브 페이지 보기-00](https://yingbbang.github.io/bnk-lotto/retirement-lotto-event-08.html)**    
 **[라이브 페이지 보기-01](https://yingbbang.github.io/bnk-lotto/retirement-lotto-event-01.html)**    
 **[라이브 페이지 보기-02](https://yingbbang.github.io/bnk-lotto/retirement-lotto-event-02.html)**    
 **[라이브 페이지 보기-03](https://yingbbang.github.io/bnk-lotto/retirement-lotto-event-00.html)**    
